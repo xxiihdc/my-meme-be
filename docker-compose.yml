@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  myapp:
+    image: golang-my-meme
+    container_name: myapp-container
+    ports:
+      - "8080:8080"
+    volumes:
+      - ~/go/my-meme/my-meme-be:/app/
