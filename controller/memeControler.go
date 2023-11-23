@@ -5,31 +5,33 @@ import (
 	"my-meme/adapter"
 	"my-meme/env"
 	"my-meme/response"
+	"my-meme/service"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/oauth2/google"
-	"google.golang.org/api/drive/v3"
-	"google.golang.org/api/option"
-	"google.golang.org/api/sheets/v4"
 )
 
-func TestApi(ctx *gin.Context) {
-	b, err := os.ReadFile(env.ClientSecretFile)
-	if err != nil {
-		fmt.Print(err)
+type MemeController struct {
+	memeService service.MemeService
+}
+
+func NewMemeController(memeService service.MemeService) *MemeController {
+	return &MemeController{
+		memeService: memeService,
 	}
+}
 
-	// config, err := google.ConfigFromJSON(b, "https://www.googleapis.com/auth/spreadsheets.readonly")
-	config, err := google.ConfigFromJSON(b, drive.DriveMetadataReadonlyScope)
-	if err != nil {
-		fmt.Print(err)
+func (mc *MemeController) Search(ctx *gin.Context) {
+	webResponse := response.Response{
+		Code:   http.StatusOK,
+		Status: "OK",
+		Data:   mc.memeService.FindByKeyWord(ctx, "Kieu Khanh"),
 	}
+	ctx.JSON(http.StatusOK, webResponse)
+}
 
-	client := adapter.GetClient(config)
-
-	srv, err := sheets.NewService(ctx, option.WithHTTPClient(client))
+func (*MemeController) TestApi(ctx *gin.Context) {
+	srv, err := adapter.GetSheetService(ctx)
 	if err != nil {
 		fmt.Print(err)
 	}
@@ -54,12 +56,11 @@ func TestApi(ctx *gin.Context) {
 	}
 }
 
-func ShowImage(ctx *gin.Context) {
-	id := ctx.Param("id")
+func (mc *MemeController) TestService(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:   http.StatusOK,
 		Status: "OK",
-		Data:   fmt.Sprintf("https://drive.google.com/uc?id=%s", id),
+		Data:   mc.memeService.FindAll(ctx),
 	}
 	ctx.JSON(http.StatusOK, webResponse)
 }

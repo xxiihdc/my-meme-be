@@ -1,9 +1,11 @@
 package repository
 
-type Repo[T interface{}] interface {
-	GetAll() ([]T, error)
-	GetByID(id int) (*T, error)
-	Create(t T) (*T, error)
-	Update(t T) (*T, error)
-	Delete(id int) error
+import "github.com/gin-gonic/gin"
+
+type Repository[T interface{}] interface {
+	GetAll(ctx *gin.Context) ([][]interface{}, error)
+	GetByID(ctx *gin.Context, id int) (*T, error)
+	Create(ctx *gin.Context, t T) (*T, error)
+	Update(ctx *gin.Context, t T) (*T, error)
+	Delete(ctx *gin.Context, id int) error
 }

@@ -16,8 +16,9 @@ import (
 
 func main() {
 	// loadEnv()
+	// memeRepo := repository.NewMemeRepositoryImpl()
+	// memeService := service.NewMemeServiceImpl(memeRepo)
 	log.Info().Msg("Started server!")
 	router := routes.SetupRoutes()
-
-	http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":8888", router)
 }
