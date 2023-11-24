@@ -17,6 +17,10 @@ func SetupRoutes() *gin.Engine {
 	router.Use(SetJSONContentTypeMiddleware())
 	apiV1Router := router.Group("/api/v1")
 	{
+		memeRouter := apiV1Router.Group("/meme")
+		memeRouter.GET("/index", func(ctx *gin.Context) {
+			app.MemeController.Index(ctx)
+		})
 		apiV1Router.GET("/test", func(ctx *gin.Context) {
 			app.MemeController.TestApi(ctx)
 		})
@@ -24,7 +28,7 @@ func SetupRoutes() *gin.Engine {
 			app.MemeController.TestService(ctx)
 		})
 		apiV1Router.GET("search", func(ctx *gin.Context) {
-			app.MemeController.Search(ctx)
+			app.MemeController.Index(ctx)
 		})
 	}
 

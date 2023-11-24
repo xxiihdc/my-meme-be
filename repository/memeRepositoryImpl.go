@@ -55,19 +55,9 @@ func (r *MemeRepositoryImpl) FindByKeyWord(ctx *gin.Context, keyword string) (*s
 
 	scriptID := "AKfycbwVrTvBNIu-K3DR8epeGoxVzQWRAR0BUia87TYBPWR7D_TTQFZQnp_ECVfG3eFSwhQNIw"
 
-	payload := map[string]interface{}{
-		"function": "searchTerm",
-		"parameters": []interface{}{
-			"Kieu Khanh",
-		},
-	}
-
 	req := &script.ExecutionRequest{
-		Function: "searchTerm",
-		Parameters: []interface{}{
-			scriptID,
-			payload,
-		},
+		Function:   "searchTerm",
+		Parameters: []interface{}{keyword},
 	}
 
 	resp, err := service.Scripts.Run(scriptID, req).Context(ctx).Do()

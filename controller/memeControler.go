@@ -21,12 +21,19 @@ func NewMemeController(memeService service.MemeService) *MemeController {
 	}
 }
 
-func (mc *MemeController) Search(ctx *gin.Context) {
+func (mc *MemeController) Index(ctx *gin.Context) {
+	keyword := ctx.Query("q")
 	webResponse := response.Response{
 		Code:   http.StatusOK,
 		Status: "OK",
-		Data:   mc.memeService.FindByKeyWord(ctx, "Kieu Khanh"),
 	}
+
+	if keyword == "" {
+		webResponse.Data = mc.memeService.FindAll(ctx)
+	} else {
+		webResponse.Data = mc.memeService.FindByKeyWord(ctx, keyword)
+	}
+
 	ctx.JSON(http.StatusOK, webResponse)
 }
 

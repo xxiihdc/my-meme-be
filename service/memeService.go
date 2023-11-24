@@ -13,7 +13,7 @@ import (
 
 type MemeService interface {
 	FindAll(ctx *gin.Context) []model.Meme
-	FindByKeyWord(ctx *gin.Context, keyword string) string
+	FindByKeyWord(ctx *gin.Context, keyword string) []model.Meme
 }
 
 type MemeServiceImpl struct {
@@ -22,9 +22,59 @@ type MemeServiceImpl struct {
 
 func (m *MemeServiceImpl) FindAll(ctx *gin.Context) []model.Meme {
 	val, _ := m.MemeRepository.GetAll(ctx)
+	return m.transformObj(val)
+}
+
+func (m *MemeServiceImpl) FindByKeyWord(ctx *gin.Context, keyword string) []model.Meme {
+	val, _ := m.MemeRepository.FindByKeyWord(ctx, keyword)
+	if val.Response != nil {
+		result := val.Response
+		fmt.Println(result)
+		fmt.Println(m.transformObj(m.convertJSONTo2D(result)))
+		return m.transformObj(m.convertJSONTo2D(result))
+	} else {
+		fmt.Println("No result returned from the script.")
+	}
+	return []model.Meme{}
+}
+
+func NewMemeServiceImpl(memeRepo repository.MemeRepository) MemeService {
+	return &MemeServiceImpl{MemeRepository: memeRepo}
+}
+
+func (m *MemeServiceImpl) convertJSONTo2D(data []byte) [][]interface{} {
+	var jsonData map[string]interface{}
+	if err := json.Unmarshal(data, &jsonData); err != nil {
+		fmt.Println(err)
+		fmt.Println("err 1")
+		return nil
+	}
+
+	var result [][]interface{}
+	for _, v := range jsonData["result"].([]interface{}) {
+		if subSlice, ok := v.([]interface{}); ok {
+			result = append(result, subSlice)
+		} else {
+			fmt.Println("err 2")
+			return nil
+		}
+	}
+	fmt.Println(jsonData)
+	fmt.Println(result)
+	return result
+}
+
+func (m *MemeServiceImpl) transformObj(arr [][]interface{}) []model.Meme {
+	if len(arr) == 0 {
+		return []model.Meme{}
+	}
 	var objects []model.Meme
-	for _, subSlice := range val {
-		id, _ := strconv.ParseUint(subSlice[0].(string), 10, 0)
+	for _, subSlice := range arr {
+		fmt.Println(subSlice[0])
+		id, err := strconv.ParseUint(subSlice[0].(string), 10, 0)
+		if err != nil {
+
+		}
 		obj := model.Meme{
 			ID:          uint(id),
 			DriveId:     subSlice[1].(string),
@@ -35,22 +85,8 @@ func (m *MemeServiceImpl) FindAll(ctx *gin.Context) []model.Meme {
 		}
 		objects = append(objects, obj)
 	}
-	return objects[1:]
-}
-
-func (m *MemeServiceImpl) FindByKeyWord(ctx *gin.Context, keyword string) string {
-	val, _ := m.MemeRepository.FindByKeyWord(ctx, keyword)
-	if val.Response != nil {
-		result := val.Response
-		var jsonData map[string]interface{}
-		json.Unmarshal([]byte(result), &jsonData)
-		return jsonData["result"].(string)
-	} else {
-		fmt.Println("No result returned from the script.")
+	if objects[0].Name == "Name" {
+		return objects[1:]
 	}
-	return "OK"
-}
-
-func NewMemeServiceImpl(memeRepo repository.MemeRepository) MemeService {
-	return &MemeServiceImpl{MemeRepository: memeRepo}
+	return objects
 }
