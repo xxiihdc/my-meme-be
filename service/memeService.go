@@ -70,8 +70,17 @@ func (m *MemeServiceImpl) transformObj(arr [][]interface{}) []model.Meme {
 	}
 	var objects []model.Meme
 	for _, subSlice := range arr {
+		var id uint64
+		var err interface{}
+		switch subSlice[0].(type) {
+		case float64:
+			id = uint64(subSlice[0].(float64))
+		case string:
+			id, err = strconv.ParseUint(subSlice[0].(string), 10, 0)
+		}
+
 		fmt.Println(subSlice[0])
-		id, err := strconv.ParseUint(subSlice[0].(string), 10, 0)
+
 		if err != nil {
 
 		}
