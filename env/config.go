@@ -1,5 +1,7 @@
 package env
 
-const(
-	ClientSecretFile = "client_secret_473522429728-ajiotkm33vahlcn9dgci5djgsdg7onkk.apps.googleusercontent.com.json"
+import "os"
+
+var (
+	ClientSecretFile = os.Getenv("CLIENT_SECRET_FILE")
 )

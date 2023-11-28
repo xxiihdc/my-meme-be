@@ -1,5 +1,7 @@
 package env
 
-const (
-	MemeTable = "1On-oQTyukszFINieyVOpIfG9enfTxJSjlB8WtgRwtLw"
+import "os"
+
+var (
+	MemeTable = os.Getenv("MEME_TABLE")
 )
