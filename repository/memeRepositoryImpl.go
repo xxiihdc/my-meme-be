@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"log"
 	"my-meme/adapter"
-	"my-meme/env"
 	"my-meme/model"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"google.golang.org/api/script/v1"
 )
 
@@ -20,8 +21,9 @@ func (r *MemeRepositoryImpl) GetAll(ctx *gin.Context) ([][]interface{}, error) {
 	if err != nil {
 		panic("Error on get client Google API")
 	}
-
-	spreadsheetId := env.MemeTable
+	godotenv.Load()
+	spreadsheetId := os.Getenv("MEME_TABLE")
+	fmt.Println("debug " + spreadsheetId)
 	readRange := "Sheet1!A:F"
 	val, err := service.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
 	return val.Values, err

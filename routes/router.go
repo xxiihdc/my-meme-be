@@ -21,9 +21,9 @@ func SetupRoutes() *gin.Engine {
 		memeRouter.GET("/index", func(ctx *gin.Context) {
 			app.MemeController.Index(ctx)
 		})
-		apiV1Router.GET("/test", func(ctx *gin.Context) {
-			app.MemeController.TestApi(ctx)
-		})
+		// apiV1Router.GET("/test", func(ctx *gin.Context) {
+		// 	app.MemeController.TestApi(ctx)
+		// })
 		apiV1Router.GET("/testa", func(ctx *gin.Context) {
 			app.MemeController.TestService(ctx)
 		})

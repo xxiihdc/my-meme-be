@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"my-meme/env"
 	"net/http"
 	"os"
 
@@ -25,7 +24,7 @@ func GetScriptService(ctx *gin.Context) (*script.Service, error) {
 }
 
 func getClient(scope string) *http.Client {
-	b, err := os.ReadFile(env.ClientSecretFile)
+	b, err := os.ReadFile(os.Getenv("CLIENT_SECRET_FILE"))
 	if err != nil {
 		fmt.Print(err)
 	}

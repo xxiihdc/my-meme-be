@@ -1,9 +1,6 @@
 package controller
 
 import (
-	"fmt"
-	"my-meme/adapter"
-	"my-meme/env"
 	"my-meme/response"
 	"my-meme/service"
 	"net/http"
@@ -37,31 +34,31 @@ func (mc *MemeController) Index(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (*MemeController) TestApi(ctx *gin.Context) {
-	srv, err := adapter.GetSheetService(ctx)
-	if err != nil {
-		fmt.Print(err)
-	}
+// func (*MemeController) TestApi(ctx *gin.Context) {
+// 	srv, err := adapter.GetSheetService(ctx)
+// 	if err != nil {
+// 		fmt.Print(err)
+// 	}
 
-	spreadsheetId := env.MemeTable
-	readRange := "A2:J4"
+// 	spreadsheetId := env.MemeTable
+// 	readRange := "A2:J4"
 
-	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
-	if err != nil {
-		fmt.Print(err)
-	}
-	if len(resp.Values) == 0 {
-		fmt.Println("No data found.")
-		ctx.JSON(http.StatusOK, "No data found")
-	} else {
-		webResponse := response.Response{
-			Code:   http.StatusOK,
-			Status: "OK",
-			Data:   resp.Values,
-		}
-		ctx.JSON(http.StatusOK, webResponse)
-	}
-}
+// 	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
+// 	if err != nil {
+// 		fmt.Print(err)
+// 	}
+// 	if len(resp.Values) == 0 {
+// 		fmt.Println("No data found.")
+// 		ctx.JSON(http.StatusOK, "No data found")
+// 	} else {
+// 		webResponse := response.Response{
+// 			Code:   http.StatusOK,
+// 			Status: "OK",
+// 			Data:   resp.Values,
+// 		}
+// 		ctx.JSON(http.StatusOK, webResponse)
+// 	}
+// }
 
 func (mc *MemeController) TestService(ctx *gin.Context) {
 	webResponse := response.Response{
