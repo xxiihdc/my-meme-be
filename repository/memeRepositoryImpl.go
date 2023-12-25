@@ -26,6 +26,11 @@ func (r *MemeRepositoryImpl) GetAll(ctx *gin.Context) ([][]interface{}, error) {
 	fmt.Println("debug " + spreadsheetId)
 	readRange := "Sheet1!A:F"
 	val, err := service.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
+	if err != nil {
+		fmt.Println("duc debug")
+		fmt.Println(err)
+		fmt.Println("duc debug")
+	}
 	return val.Values, err
 }
 
@@ -66,8 +71,6 @@ func (r *MemeRepositoryImpl) FindByKeyWord(ctx *gin.Context, keyword string) (*s
 	if err != nil {
 		log.Fatalf("Unable to execute script: %v", err)
 	}
-	data := resp.Response[0]
-	fmt.Println(data)
 	return resp, err
 }
 

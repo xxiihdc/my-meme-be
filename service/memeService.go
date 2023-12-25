@@ -29,8 +29,6 @@ func (m *MemeServiceImpl) FindByKeyWord(ctx *gin.Context, keyword string) []mode
 	val, _ := m.MemeRepository.FindByKeyWord(ctx, keyword)
 	if val.Response != nil {
 		result := val.Response
-		fmt.Println(result)
-		fmt.Println(m.transformObj(m.convertJSONTo2D(result)))
 		return m.transformObj(m.convertJSONTo2D(result))
 	} else {
 		fmt.Println("No result returned from the script.")
@@ -45,8 +43,6 @@ func NewMemeServiceImpl(memeRepo repository.MemeRepository) MemeService {
 func (m *MemeServiceImpl) convertJSONTo2D(data []byte) [][]interface{} {
 	var jsonData map[string]interface{}
 	if err := json.Unmarshal(data, &jsonData); err != nil {
-		fmt.Println(err)
-		fmt.Println("err 1")
 		return nil
 	}
 
@@ -55,12 +51,9 @@ func (m *MemeServiceImpl) convertJSONTo2D(data []byte) [][]interface{} {
 		if subSlice, ok := v.([]interface{}); ok {
 			result = append(result, subSlice)
 		} else {
-			fmt.Println("err 2")
 			return nil
 		}
 	}
-	fmt.Println(jsonData)
-	fmt.Println(result)
 	return result
 }
 
@@ -78,8 +71,6 @@ func (m *MemeServiceImpl) transformObj(arr [][]interface{}) []model.Meme {
 		case string:
 			id, err = strconv.ParseUint(subSlice[0].(string), 10, 0)
 		}
-
-		fmt.Println(subSlice[0])
 
 		if err != nil {
 
