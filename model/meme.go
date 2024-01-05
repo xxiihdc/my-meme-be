@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type Meme struct {
 	ID          uint      `JSON:"id"`

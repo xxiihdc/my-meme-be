@@ -12,7 +12,7 @@ import (
 )
 
 type MemeService interface {
-	FindAll(ctx *gin.Context) []model.Meme
+	FindAll() []model.Meme
 	FindByKeyWord(ctx *gin.Context, keyword string) []model.Meme
 }
 
@@ -20,8 +20,8 @@ type MemeServiceImpl struct {
 	MemeRepository repository.MemeRepository
 }
 
-func (m *MemeServiceImpl) FindAll(ctx *gin.Context) []model.Meme {
-	val, _ := m.MemeRepository.GetAll(ctx)
+func (m *MemeServiceImpl) FindAll() []model.Meme {
+	val, _ := m.MemeRepository.FindAll()
 	return m.transformObj(val)
 }
 

@@ -1,7 +1,9 @@
 package routes
 
 import (
+	"fmt"
 	"my-meme/controller"
+	"my-meme/orm/db"
 	"my-meme/repository"
 	"my-meme/service"
 	"net/http"
@@ -110,7 +112,29 @@ type App struct {
 }
 
 func NewApp() *App {
-	memeRepo := repository.NewMemeRepositoryImpl()
+	context, err := gin.CreateTestContext(nil)
+
+	if err != nil {
+		fmt.Println("118: router")
+		fmt.Println(err)
+		fmt.Println("==================")
+	}
+
+	script, err1 := db.Connect(context)
+
+	sheet, _ := db.ConnectSheet(context)
+
+	if err1 != nil {
+		fmt.Println("123: router")
+		fmt.Println(err1)
+		fmt.Println("==================")
+	}
+
+	var db_connect db.DB
+	db_connect.Script = script
+	db_connect.Sheet = sheet
+
+	memeRepo := repository.NewMemeRepositoryImpl(db_connect)
 
 	memeService := service.NewMemeServiceImpl(memeRepo)
 

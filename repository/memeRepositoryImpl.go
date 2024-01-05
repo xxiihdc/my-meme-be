@@ -5,6 +5,7 @@ import (
 	"log"
 	"my-meme/adapter"
 	"my-meme/model"
+	"my-meme/orm/db"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -13,18 +14,20 @@ import (
 )
 
 type MemeRepositoryImpl struct {
+	database db.DB
 }
 
-func (r *MemeRepositoryImpl) GetAll(ctx *gin.Context) ([][]interface{}, error) {
-	service, err := adapter.GetSheetService(ctx)
-
-	if err != nil {
-		panic("Error on get client Google API")
-	}
+func (r *MemeRepositoryImpl) FindAll() ([][]interface{}, error) {
+	service := r.database.Sheet
 	godotenv.Load()
 	spreadsheetId := os.Getenv("MEME_TABLE")
-	fmt.Println("debug " + spreadsheetId)
+
 	readRange := "Sheet1!A:F"
+
+	meme := model.Meme{}
+
+	r.database.FindAll(meme)
+
 	val, err := service.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
 	if err != nil {
 		fmt.Println("duc debug")
@@ -74,6 +77,8 @@ func (r *MemeRepositoryImpl) FindByKeyWord(ctx *gin.Context, keyword string) (*s
 	return resp, err
 }
 
-func NewMemeRepositoryImpl() MemeRepository {
-	return &MemeRepositoryImpl{}
+func NewMemeRepositoryImpl(db db.DB) MemeRepository {
+	return &MemeRepositoryImpl{
+		database: db,
+	}
 }
